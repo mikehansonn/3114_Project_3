@@ -4,3 +4,5 @@
 /QuicksortTest.class
 /Swap.class
 /LRUBufferPool.class
+/BufferPool$Node.class
+/BufferPool.class
