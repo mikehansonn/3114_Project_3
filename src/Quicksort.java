@@ -75,11 +75,13 @@ public class Quicksort {
         // TODO: Write statistics to statFileName
     }
 
+    // need to make sure that pivot is swapped to the end
     private void quicksort(int i, int j) throws Exception {
         int pivotIndex = findpivot(i, j);
         short pivot = getShort(pivotIndex);
+        swap(pivotIndex, j);
         int k = partition(i, j - 1, pivot);
-        setShort(k, pivot);
+        swap(k, j);
         if ((k - i) > 1) quicksort(i, k - 1);
         if ((j - k) > 1) quicksort(k + 1, j);
     }
