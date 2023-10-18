@@ -3,6 +3,7 @@
  */
 
 import java.io.IOException;
+import java.nio.ByteBuffer;
 
 /**
  * The class containing the main method.
@@ -32,6 +33,18 @@ import java.io.IOException;
 // letter of this restriction.
 
 public class Quicksort {
+    private BufferPool bufferPool;
+    private int numBuffers;
+    private String statFileName;
+    private long startTime, endTime;
+    private int cacheHits = 0, diskReads = 0, diskWrites = 0;
+    
+    
+    public Quicksort(String dataFileName, int numBuffers, String statFileName) throws Exception {
+        this.bufferPool = new BufferPool(dataFileName, numBuffers);
+        this.numBuffers = numBuffers;
+        this.statFileName = statFileName;
+    }
 
     /**
      * This method is used to generate a file of a certain size, containing a
@@ -51,6 +64,62 @@ public class Quicksort {
         inputs[2] = blockSize;
         generator.generateFile(inputs);
     }
+    
+    public void sort() throws Exception {
+        startTime = System.currentTimeMillis();
+        // Calculate the number of items based on file size
+        int numItems = (int) (bufferPool.getFileSize() / 4) - 1;
+        quicksort(0, numItems);
+        endTime = System.currentTimeMillis();
+        bufferPool.flushAll();
+        // TODO: Write statistics to statFileName
+    }
+
+    private void quicksort(int i, int j) throws Exception {
+        int pivotIndex = findpivot(i, j);
+        short pivot = getShort(pivotIndex);
+        int k = partition(i, j - 1, pivot);
+        setShort(k, pivot);
+        if ((k - i) > 1) quicksort(i, k - 1);
+        if ((j - k) > 1) quicksort(k + 1, j);
+    }
+
+    private int findpivot(int i, int j) {
+        return (i + j) / 2;
+    }
+
+    private int partition(int left, int right, short pivot) throws Exception {
+        while (left <= right) {
+            while (getShort(left) < pivot) left++;
+            while (right >= left && getShort(right) >= pivot) right--;
+            if (right > left) swap(left, right);
+        }
+        return left;
+    }
+
+    private short getShort(int index) throws Exception {
+        int blockIndex = index / 1024;
+        int offset = (index % 1024) * 4;
+        byte[] block = bufferPool.getBlock(blockIndex);
+        ByteBuffer wrapped = ByteBuffer.wrap(block, offset, 2);
+        return wrapped.getShort();
+    }
+
+    private void setShort(int index, short value) throws Exception {
+        int blockIndex = index / 1024;
+        int offset = (index % 1024) * 4;
+        byte[] block = bufferPool.getBlock(blockIndex);
+        ByteBuffer wrapped = ByteBuffer.wrap(block);
+        wrapped.putShort(offset, value);
+    }
+
+    private void swap(int i, int j) throws Exception {
+        short temp = getShort(i);
+        setShort(i, getShort(j));
+        setShort(j, temp);
+    }
+    
+    
 
 
     /**
@@ -58,6 +127,15 @@ public class Quicksort {
      *      Command line parameters.
      */
     public static void main(String[] args) {
-        // This is the main file for the program.
+        try {
+            String dataFileName = args[0];
+            int numBuffers = Integer.parseInt(args[1]);
+            String statFileName = args[2];
+            Quicksort quicksort = new Quicksort(dataFileName, numBuffers, statFileName);
+            quicksort.sort();
+        } catch (Exception e) {
+            e.printStackTrace();
+            System.out.println("An error occurred: " + e.getMessage());
+        }
     }
 }
