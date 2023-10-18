@@ -32,7 +32,6 @@ import java.io.IOException;
 // letter of this restriction.
 
 public class Quicksort {
-
     /**
      * This method is used to generate a file of a certain size, containing a
      * specified number of records.
@@ -52,6 +51,39 @@ public class Quicksort {
         generator.generateFile(inputs);
     }
 
+    public static void quicksort(Comparable[] A, int i, int j) {
+        if (i < j) {
+            int pivotindex = findpivot(A, i, j);
+            Swap.swap(A, pivotindex, j);
+            int k = partition(A, i, j - 1, A[j]);
+            Swap.swap(A, k, j);
+            if ((k - i) > 1) {
+                quicksort(A, i, k - 1);
+            }
+            if ((j - k) > 1) {
+                quicksort(A, k + 1, j);
+            }
+        }
+    }
+
+    private static int findpivot(Comparable[] A, int i, int j) {
+        return (i + j) / 2;
+    }
+
+    private static int partition(Comparable[] A, int left, int right, Comparable pivot) {
+        while (left <= right) {
+            while (A[left].compareTo(pivot) < 0) {
+                left++;
+            }
+            while ((right >= left) && (A[right].compareTo(pivot) >= 0)) {
+                right--;
+            }
+            if (right > left) {
+                Swap.swap(A, left, right);
+            }
+        }
+        return left;
+    }
 
     /**
      * @param args
@@ -59,5 +91,13 @@ public class Quicksort {
      */
     public static void main(String[] args) {
         // This is the main file for the program.
+    }
+}
+
+class Swap {
+    public static void swap(Comparable[] arr, int i, int j) {
+        Comparable temp = arr[i];
+        arr[i] = arr[j];
+        arr[j] = temp;
     }
 }
