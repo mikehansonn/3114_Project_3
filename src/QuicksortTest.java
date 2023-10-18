@@ -39,9 +39,10 @@ public class QuicksortTest extends TestCase {
 
     /**
      * Get code coverage of the class declaration.
+     * @throws Exception 
      */
-    public void testQInit() {
-        Quicksort tree = new Quicksort();
+    public void testQInit() throws Exception {
+        Quicksort tree = new Quicksort("input.txt", 1, "input.txt");
         assertNotNull(tree);
         Quicksort.main(null);
     }

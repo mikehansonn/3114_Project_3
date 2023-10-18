@@ -1,5 +1,7 @@
 /**
- * {Project Description Here}
+ * implement a quicksort and
+ * bufferpool to sort an index
+ * file of characters or binary
  */
 
 import java.io.IOException;
@@ -8,8 +10,8 @@ import java.nio.ByteBuffer;
 /**
  * The class containing the main method.
  *
- * @author {Your Name Here}
- * @version {Put Something Here}
+ * @author mikehanson matt02
+ * @version 10/18/23
  */
 
 // On my honor:
@@ -33,8 +35,6 @@ import java.nio.ByteBuffer;
 // letter of this restriction.
 
 public class Quicksort {
-<<<<<<< HEAD
-=======
     private BufferPool bufferPool;
     private int numBuffers;
     private String statFileName;
@@ -48,7 +48,6 @@ public class Quicksort {
         this.statFileName = statFileName;
     }
 
->>>>>>> b6e350dac14f6dc5c8d159c189b8278f4e858778
     /**
      * This method is used to generate a file of a certain size, containing a
      * specified number of records.
@@ -124,39 +123,6 @@ public class Quicksort {
     
     
 
-    public static void quicksort(Comparable[] A, int i, int j) {
-        if (i < j) {
-            int pivotindex = findpivot(A, i, j);
-            Swap.swap(A, pivotindex, j);
-            int k = partition(A, i, j - 1, A[j]);
-            Swap.swap(A, k, j);
-            if ((k - i) > 1) {
-                quicksort(A, i, k - 1);
-            }
-            if ((j - k) > 1) {
-                quicksort(A, k + 1, j);
-            }
-        }
-    }
-
-    private static int findpivot(Comparable[] A, int i, int j) {
-        return (i + j) / 2;
-    }
-
-    private static int partition(Comparable[] A, int left, int right, Comparable pivot) {
-        while (left <= right) {
-            while (A[left].compareTo(pivot) < 0) {
-                left++;
-            }
-            while ((right >= left) && (A[right].compareTo(pivot) >= 0)) {
-                right--;
-            }
-            if (right > left) {
-                Swap.swap(A, left, right);
-            }
-        }
-        return left;
-    }
 
     /**
      * @param args
@@ -173,13 +139,5 @@ public class Quicksort {
             e.printStackTrace();
             System.out.println("An error occurred: " + e.getMessage());
         }
-    }
-}
-
-class Swap {
-    public static void swap(Comparable[] arr, int i, int j) {
-        Comparable temp = arr[i];
-        arr[i] = arr[j];
-        arr[j] = temp;
     }
 }
