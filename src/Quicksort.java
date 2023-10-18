@@ -77,11 +77,13 @@ public class Quicksort {
         // TODO: Write statistics to statFileName
     }
 
+    // need to make sure that pivot is swapped to the end
     private void quicksort(int i, int j) throws Exception {
         int pivotIndex = findpivot(i, j);
         short pivot = getShort(pivotIndex);
+        swap(pivotIndex, j);
         int k = partition(i, j - 1, pivot);
-        setShort(k, pivot);
+        swap(k, j);
         if ((k - i) > 1) quicksort(i, k - 1);
         if ((j - k) > 1) quicksort(k + 1, j);
     }
@@ -113,14 +115,22 @@ public class Quicksort {
         byte[] block = bufferPool.getBlock(blockIndex);
         ByteBuffer wrapped = ByteBuffer.wrap(block);
         wrapped.putShort(offset, value);
+        bufferPool.markAsDirty(blockIndex);  // Mark the block as dirty
     }
 
     private void swap(int i, int j) throws Exception {
         short temp = getShort(i);
         setShort(i, getShort(j));
         setShort(j, temp);
+        int blockIndexI = i / 1024;
+        int blockIndexJ = j / 1024;
+        bufferPool.markAsDirty(blockIndexI);  // Mark the block as dirty
+        if (blockIndexI != blockIndexJ) {
+            bufferPool.markAsDirty(blockIndexJ); // Mark the block as dirty
+        }
     }
     
+   
     
 
 

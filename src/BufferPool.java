@@ -96,5 +96,12 @@ public class BufferPool {
     public long getFileSize() throws Exception {
         return diskFile.length();
     }
+    
+    public void markAsDirty(int blockIndex) {
+        Node node = indexArray[blockIndex % numBuffers];
+        if (node != null && node.blockIndex == blockIndex) {
+            node.isDirty = true;
+        }
+    }
 
 }
