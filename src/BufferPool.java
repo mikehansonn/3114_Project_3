@@ -92,4 +92,9 @@ public class BufferPool {
             node = node.next;
         }
     }
+    
+    public long getFileSize() throws Exception {
+        return diskFile.length();
+    }
+
 }
