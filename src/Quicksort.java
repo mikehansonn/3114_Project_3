@@ -36,10 +36,13 @@ import java.nio.ByteBuffer;
 
 public class Quicksort {
     private BufferPool bufferPool;
-    private int numBuffers;
-    private String statFileName;
-    private long startTime, endTime;
-    private int cacheHits = 0, diskReads = 0, diskWrites = 0;
+    private int numBuffers; //implement later
+    private String statFileName; //implement later
+    private static long startTime;  //implement later
+    private static long endTime;  //implement later
+    private int cacheHits = 0; //implement later
+    private int diskReads = 0; //implement later
+    private int diskWrites = 0; //implement later
     
     
     public Quicksort(String dataFileName, int numBuffers, String statFileName) throws Exception {
@@ -89,19 +92,7 @@ public class Quicksort {
     }
 
     private int findpivot(int i, int j) throws Exception {
-        int mid = (i + j) / 2;
-
-        short first = getShort(i);
-        short middle = getShort(mid);
-        short last = getShort(j);
-
-        if ((first >= middle && first <= last) || (first >= last && first <= middle)) {
-            return i;
-        } else if ((middle >= first && middle <= last) || (middle >= last && middle <= first)) {
-            return mid;
-        } else {
-            return j;
-        }
+        return (i+j)/2;
     }
 
     private int partition(int left, int right, short pivot) throws Exception {
@@ -142,20 +133,19 @@ public class Quicksort {
         }
     }
     
+
     /**
      * @param args
      *      Command line parameters.
+     * @throws Exception 
      */
-    public static void main(String[] args) {
-        try {
-            String dataFileName = args[0];
-            int numBuffers = Integer.parseInt(args[1]);
-            String statFileName = args[2];
-            Quicksort quicksort = new Quicksort(dataFileName, numBuffers, statFileName);
-            quicksort.sort();
-        } catch (Exception e) {
-            e.printStackTrace();
-            System.out.println("An error occurred: " + e.getMessage());
-        }
+    public static void main(String[] args) throws Exception {
+        String dataFileName = args[0];
+        int numBuffers = Integer.parseInt(args[1]);
+        String statFileName = args[2];
+        Quicksort quicksort = new Quicksort(dataFileName, numBuffers, statFileName);
+        quicksort.sort();
+        long time = endTime - startTime;
+        System.out.println(time + "ms");
     }
 }
