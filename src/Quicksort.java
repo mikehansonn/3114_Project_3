@@ -89,19 +89,7 @@ public class Quicksort {
     }
 
     private int findpivot(int i, int j) throws Exception {
-        int mid = (i + j) / 2;
-
-        short first = getShort(i);
-        short middle = getShort(mid);
-        short last = getShort(j);
-
-        if ((first >= middle && first <= last) || (first >= last && first <= middle)) {
-            return i;
-        } else if ((middle >= first && middle <= last) || (middle >= last && middle <= first)) {
-            return mid;
-        } else {
-            return j;
-        }
+        return (i+j)/2;
     }
 
     private int partition(int left, int right, short pivot) throws Exception {
