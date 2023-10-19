@@ -28,7 +28,7 @@ public class QuicksortTest extends TestCase {
     {
         String[] args = new String[3];
         args[0] = "input.txt";
-        args[1] = "100";
+        args[1] = "1000";
         args[2] = "statFile.txt";
         Quicksort.generateFile("input.txt", "100", 'a');
         assertFalse(fileChecker.checkFile("input.txt"));

@@ -7,7 +7,7 @@ public class BufferPool {
     private final RandomAccessFile diskFile; // The disk file to read from and write to
 
     private Node head, tail; // Head and tail of the LRU list
-    private Node[] indexArray; // Array to keep track of block indices
+    private Node[] allNodes;// Array to keep track of block indices
     private int currentBuffers; // Current number of buffers in use
 
     private class Node {
@@ -21,13 +21,19 @@ public class BufferPool {
         this.numBuffers = numBuffers;
         this.currentBuffers = 0;
         this.diskFile = new RandomAccessFile(fileName, "rw");
-        this.indexArray = new Node[numBuffers];
+        this.allNodes = new Node[numBuffers];
     }
 
-    public byte[] getBlock(int blockIndex) throws Exception {
-        Node node = indexArray[blockIndex % numBuffers];
-        if (node != null && node.blockIndex == blockIndex) {
-            // Move node to head of list
+    public byte[] getBlock(int blockIndex) throws Exception {   
+        Node node = null;
+        for (Node n : allNodes) {
+            if (n != null && n.blockIndex == blockIndex) {
+                node = n;
+                break;
+            }
+        }
+
+        if (node != null) {
             moveToHead(node);
             return node.blockData;
         } else {
@@ -39,7 +45,7 @@ public class BufferPool {
                 node.blockData = block;
                 node.blockIndex = blockIndex;
                 node.isDirty = false;
-                indexArray[blockIndex % numBuffers] = node;
+                allNodes[currentBuffers] = node;
                 currentBuffers++;
             } else {
                 // Evict the least recently used block
@@ -47,12 +53,20 @@ public class BufferPool {
                 if (toEvict.isDirty) {
                     writeBlockToDisk(toEvict.blockIndex, toEvict.blockData);
                 }
-                indexArray[toEvict.blockIndex % numBuffers] = null;
+                
+                int indexToReplace = 0;
+                for (int i = 0; i < allNodes.length; i++) {
+                    if (allNodes[i] == toEvict) {
+                        indexToReplace = i;
+                        break;
+                    }
+                }
+             
                 node = toEvict;
                 node.blockData = block;
                 node.blockIndex = blockIndex;
                 node.isDirty = false;
-                indexArray[blockIndex % numBuffers] = node;
+                allNodes[indexToReplace] = node;
             }
 
             moveToHead(node);
@@ -67,7 +81,7 @@ public class BufferPool {
         if (node.next != null) node.next.prev = node.prev;
         if (node == tail) tail = node.prev;
 
-        node.prev = null;
+        node.prev = null; 
         node.next = head;
         if (head != null) head.prev = node;
         head = node;
@@ -99,9 +113,11 @@ public class BufferPool {
     }
     
     public void markAsDirty(int blockIndex) {
-        Node node = indexArray[blockIndex % numBuffers];
-        if (node != null && node.blockIndex == blockIndex) {
-            node.isDirty = true;
+        for (Node node : allNodes) {
+            if (node != null && node.blockIndex == blockIndex) {
+                node.isDirty = true;
+                break;
+            }
         }
     }
     
