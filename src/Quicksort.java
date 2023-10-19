@@ -127,13 +127,18 @@ public class Quicksort {
         byte[] block = bufferPool.getBlock(blockIndex);
         ByteBuffer wrapped = ByteBuffer.wrap(block);
         wrapped.putShort(offset, value);
-        bufferPool.markAsDirty(blockIndex);  // Mark the block as dirty
     }
 
     private void swap(int i, int j) throws Exception {
         short temp = getShort(i);
         setShort(i, getShort(j));
         setShort(j, temp);  
+        int blockIndexI = i / 1024;
+        int blockIndexJ = j / 1024;
+        bufferPool.markAsDirty(blockIndexI);  // Mark the block as dirty
+        if (blockIndexI != blockIndexJ) {
+            bufferPool.markAsDirty(blockIndexJ); // Mark the block as dirty
+        }
     }
     
     
