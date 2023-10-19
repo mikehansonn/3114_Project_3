@@ -127,6 +127,7 @@ public class Quicksort {
         byte[] block = bufferPool.getBlock(blockIndex);
         ByteBuffer wrapped = ByteBuffer.wrap(block);
         wrapped.putShort(offset, value);
+        bufferPool.markAsDirty(blockIndex); 
     }
 
     private void swap(int i, int j) throws Exception {
