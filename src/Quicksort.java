@@ -86,8 +86,20 @@ public class Quicksort {
         if ((j - k) > 1) quicksort(k + 1, j);
     }
 
-    private int findpivot(int i, int j) {
-        return (i + j) / 2;
+    private int findpivot(int i, int j) throws Exception {
+        int mid = (i + j) / 2;
+
+        short first = getShort(i);
+        short middle = getShort(mid);
+        short last = getShort(j);
+
+        if ((first >= middle && first <= last) || (first >= last && first <= middle)) {
+            return i;
+        } else if ((middle >= first && middle <= last) || (middle >= last && middle <= first)) {
+            return mid;
+        } else {
+            return j;
+        }
     }
 
     private int partition(int left, int right, short pivot) throws Exception {
@@ -119,16 +131,10 @@ public class Quicksort {
     private void swap(int i, int j) throws Exception {
         short temp = getShort(i);
         setShort(i, getShort(j));
-        setShort(j, temp);
-        int blockIndexI = i / 1024;
-        int blockIndexJ = j / 1024;
-        bufferPool.markAsDirty(blockIndexI);  // Mark the block as dirty
-        if (blockIndexI != blockIndexJ) {
-            bufferPool.markAsDirty(blockIndexJ); // Mark the block as dirty
-        }
+        setShort(j, temp);  
     }
     
-   
+    
     
 
 
