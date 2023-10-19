@@ -38,7 +38,7 @@ public class Quicksort {
     private BufferPool bufferPool;
     private int numBuffers; //implement later
     private String statFileName; //implement later
-    private static long startTime;  //implement later
+     private static long startTime;  //implement later
     private static long endTime;  //implement later
     private int cacheHits = 0; //implement later
     private int diskReads = 0; //implement later
@@ -77,6 +77,7 @@ public class Quicksort {
         quicksort(0, numItems);
         endTime = System.currentTimeMillis();
         bufferPool.flushAll();
+        bufferPool.close(); 
         // TODO: Write statistics to statFileName
     }
 

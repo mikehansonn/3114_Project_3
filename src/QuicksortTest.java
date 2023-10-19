@@ -28,12 +28,9 @@ public class QuicksortTest extends TestCase {
     {
         String[] args = new String[3];
         args[0] = "input.txt";
-        args[1] = "1";
+        args[1] = "100";
         args[2] = "statFile.txt";
-        Quicksort.generateFile("input.txt", "1", 'a');
-        // In a real test we would call the sort
-        // Quicksort.main(args);
-        // In a real test, the following would be assertTrue()
+        Quicksort.generateFile("input.txt", "100", 'a');
         assertFalse(fileChecker.checkFile("input.txt"));
     }
 
@@ -42,8 +39,10 @@ public class QuicksortTest extends TestCase {
      * @throws Exception 
      */
     public void testQInit() throws Exception {
-        Quicksort tree = new Quicksort("input.txt", 1, "input.txt");
+        Quicksort tree = new Quicksort("input.txt", 10, "input.txt");
         assertNotNull(tree);
-        Quicksort.main(null);
+        String[] args = {"input.txt", "10", "input.txt"};
+        Quicksort.main(args);
+        assertTrue(fileChecker.checkFile("input.txt"));
     }
 }

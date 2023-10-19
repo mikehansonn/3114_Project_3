@@ -1,3 +1,4 @@
+import java.io.IOException;
 import java.io.RandomAccessFile;
 
 public class BufferPool {
@@ -102,6 +103,11 @@ public class BufferPool {
         if (node != null && node.blockIndex == blockIndex) {
             node.isDirty = true;
         }
+    }
+    
+    public void close() throws IOException {
+        // Close the RandomAccessFile here
+        diskFile.close();
     }
 
 }
